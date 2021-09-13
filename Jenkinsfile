@@ -15,6 +15,8 @@ pipeline {
                     sh """
                         aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com
                     """
+                    echo $PWD
+                    ls
                     // \$(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com)
                 }
             }
