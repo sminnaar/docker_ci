@@ -26,20 +26,12 @@ pipeline {
                 script {
                     echo "Start"
                     echo "First Step"
-                        sh """
-                            docker build 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:$(GIT_COMMIT_HASH)
-                        """
-                    // builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/webapp-builder:${GIT_COMMIT_HASH}", "-f ./Dockerfile.builder .")
+                    builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/webapp-builder:${GIT_COMMIT_HASH}", "-f ./Dockerfile.builder .")
                     echo "Second Step"
-                        sh """
-                            docker push 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:$(GIT_COMMIT_HASH)
-                        """
                     builderImage.push()
                     echo "Third Step"
-
                     builderImage.push("${env.GIT_BRANCH}")
                     echo "Fourth Step"
-
                     builderImage.inside('-v $WORKSPACE:/output -u root') {
                         sh """
                            cd /output
