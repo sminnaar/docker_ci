@@ -13,7 +13,7 @@ pipeline {
                     GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
                     ACCOUNT_REGISTRY_PREFIX = "802697411312.dkr.ecr.us-east-2.amazonaws.com"
                     sh """
-                    \$(aws ecr get-login --no-include-email --region us-east-2)
+                    \$(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com)
                     """
                 }
             }
@@ -107,18 +107,18 @@ pipeline {
         // }
 
  
-        stage('Deploy to Production') {
-            when {
-                branch 'master'
-            }
-            steps {
-                script {
-                    PRODUCTION_ALB_LISTENER_ARN="arn:aws:elasticloadbalancing:us-east-1:089778365617:listener/app/production-website/a0459c11ab5707ca/5d21528a13519da6"
-                    sh """
-                    ./run-stack.sh example-webapp-production ${PRODUCTION_ALB_LISTENER_ARN}
-                    """
-                }
-            }
-        }
+        // stage('Deploy to Production') {
+        //     when {
+        //         branch 'master'
+        //     }
+        //     steps {
+        //         script {
+        //             PRODUCTION_ALB_LISTENER_ARN="arn:aws:elasticloadbalancing:us-east-1:089778365617:listener/app/production-website/a0459c11ab5707ca/5d21528a13519da6"
+        //             sh """
+        //             ./run-stack.sh example-webapp-production ${PRODUCTION_ALB_LISTENER_ARN}
+        //             """
+        //         }
+        //     }
+        // }
     }
 }
