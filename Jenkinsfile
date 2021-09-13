@@ -26,7 +26,7 @@ pipeline {
                 script {
                     echo "Start"
                         sh 'dcoker build -t 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:latest -f ./Dockerfile.builder'
-                        sh 'docker push 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:auto
+                        sh 'docker push 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:auto'
 
 
                     // echo "First Step"
