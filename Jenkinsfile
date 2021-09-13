@@ -23,23 +23,23 @@ pipeline {
                 echo 'Starting to build the project builder docker image'
                 script {
                     echo "Start"
-                        sh 'docker build -t 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:latest -f ./Dockerfile.builder'
-                        sh 'docker push 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:auto'
+                        // sh 'docker build -t 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:latest -f ./Dockerfile.builder'
+                        // sh 'docker push 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:auto'
 
 
-                    // echo "First Step"
-                    // builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/webapp-builder:${GIT_COMMIT_HASH}", "-f ./Dockerfile.builder .")
-                    // echo "Second Step"
-                    // builderImage.push()
-                    // echo "Third Step"
-                    // builderImage.push("${env.GIT_BRANCH}")
-                    // echo "Fourth Step"
-                    // builderImage.inside('-v $WORKSPACE:/output -u root') {
-                    //     sh """
-                    //        cd /output
-                    //        lein uberjar
-                    //     """
-                    // }
+                    echo "First Step"
+                    builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/webapp-builder:${GIT_COMMIT_HASH}", "-f ./Dockerfile.builder .")
+                    echo "Second Step"
+                    builderImage.push()
+                    echo "Third Step"
+                    builderImage.push("${env.GIT_BRANCH}")
+                    echo "Fourth Step"
+                    builderImage.inside('-v $WORKSPACE:/output -u root') {
+                        sh """
+                           cd /output
+                           lein uberjar
+                        """
+                    }
                 }
             }
         }
