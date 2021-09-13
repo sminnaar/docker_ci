@@ -13,7 +13,7 @@ pipeline {
                     GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
                     ACCOUNT_REGISTRY_PREFIX = "802697411312.dkr.ecr.us-east-2.amazonaws.com"
                     sh """
-                        \$(aws ecr get-login-password --region us-east-2)
+                        aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com
                     """
                     // \$(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com)
                 }
@@ -26,9 +26,14 @@ pipeline {
                 script {
                     echo "Start"
                     echo "First Step"
-                    builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/webapp-builder:${GIT_COMMIT_HASH}", "-f ./Dockerfile.builder .")
+                        sh """
+                            docker build 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:$(GIT_COMMIT_HASH)
+                        """
+                    // builderImage = docker.build("${ACCOUNT_REGISTRY_PREFIX}/webapp-builder:${GIT_COMMIT_HASH}", "-f ./Dockerfile.builder .")
                     echo "Second Step"
-
+                        sh """
+                            docker push 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:$(GIT_COMMIT_HASH)
+                        """
                     builderImage.push()
                     echo "Third Step"
 
