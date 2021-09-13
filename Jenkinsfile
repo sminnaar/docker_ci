@@ -12,11 +12,9 @@ pipeline {
                 script {
                     GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
                     ACCOUNT_REGISTRY_PREFIX = "802697411312.dkr.ecr.us-east-2.amazonaws.com"
-                    sh """
-                        aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com
-                    """
+                    sh 'aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com'
                     echo $PWD
-                    ls
+                    sh 'ls'
                     // \$(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com)
                 }
             }
@@ -27,10 +25,8 @@ pipeline {
                 echo 'Starting to build the project builder docker image'
                 script {
                     echo "Start"
-                        sh """
-                            dcoker build -t 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:latest -f ./Dockerfile.builder
-                            docker push 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:latest
-                        """
+                        sh 'dcoker build -t 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:latest -f ./Dockerfile.builder'
+                        sh 'docker push 802697411312.dkr.ecr.us-east-2.amazonaws.com/webapp-builder:auto
 
 
                     // echo "First Step"
