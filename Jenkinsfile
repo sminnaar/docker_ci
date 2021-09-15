@@ -18,10 +18,6 @@ pipeline {
     stages {
         stage('Checkout Source Code and Logging Into Registry') {
             steps {
-
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-aws', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                AWS("aws configure")
-
                 echo 'Logging Into the Private ECR Registry'
                 withEnv(["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_DEFAULT_REGION"]) {
                     script {
