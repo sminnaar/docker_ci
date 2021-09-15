@@ -22,7 +22,8 @@ pipeline {
                 echo 'Logging Into the Private ECR Registry'
                 // withEnv(["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_DEFAULT_REGION"]) {
                     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-aws', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                       ECR = AWS("ecr get-login-password --region us-east-2")
+                        AWS("--region=us-east-2 s3 ls")
+                    //    ECR = AWS("ecr get-login-password --region us-east-2")
                     }
                     script {
                         GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
