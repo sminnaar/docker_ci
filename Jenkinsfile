@@ -1,3 +1,13 @@
+@Library('github.com/releaseworks/jenkinslib') _
+// node {
+//   stage("List S3 buckets") {
+//     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+//         AWS("--region=eu-west-1 s3 ls")
+//     }
+//   }
+// }
+
+
 def builderImage
 def productionImage
 def ACCOUNT_REGISTRY_PREFIX
@@ -8,12 +18,18 @@ pipeline {
     stages {
         stage('Checkout Source Code and Logging Into Registry') {
             steps {
+
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-aws', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                AWS("aws configure")
+
                 echo 'Logging Into the Private ECR Registry'
-                script {
-                    GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
-                    ACCOUNT_REGISTRY_PREFIX = "802697411312.dkr.ecr.us-east-2.amazonaws.com"
-                    sh 'aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com'
-                    // \$(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com)
+                withEnv(["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_DEFAULT_REGION"]) {
+                    script {
+                        GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
+                        ACCOUNT_REGISTRY_PREFIX = "802697411312.dkr.ecr.us-east-2.amazonaws.com"
+                        sh 'aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com'
+                        // \$(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 802697411312.dkr.ecr.us-east-2.amazonaws.com)
+                    }
                 }
             }
         }
@@ -125,7 +141,7 @@ pipeline {
                 script {
                     PRODUCTION_ALB_LISTENER_ARN="arn:aws:elasticloadbalancing:us-east-2:802697411312:listener/app/production-website/226df1a74dfb1724/e650a6428952b6a4"
                     sh """
-                    ./run-stack.sh example-webapp-production ${PRODUCTION_ALB_LISTENER_ARN}
+                    ./run-stack.sh webapp-production ${PRODUCTION_ALB_LISTENER_ARN}
                     """
                 }
             }
